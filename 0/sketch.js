@@ -1,9 +1,7 @@
-let song;
 let mAmplitude;
 let mFFT;
 let slider;
-
-// slider to change bg color for amount of cream you like
+let song;
 
 function preload() {
   song = loadSound("../assets/coffee.mp3");
@@ -14,61 +12,65 @@ function setup() {
   mFFT = new p5.FFT();
   mAmplitude = new p5.Amplitude();
 
-  slider = createSlider(80, 160, 120); 
+  slider = createSlider(80, 160, 120);
   slider.position(10, 10);
   slider.size(150);
 }
 
 function draw() {
   let creaminess = slider.value();
-  
+
+  // Smooth transition for background color
   let bgColor = color(248, 244, 227); // Base light beige
-  let bgRed = lerp(248, 169, creaminess / 160);  // Adjust red (more cream, more brownish)
-  let bgGreen = lerp(244, 124, creaminess / 160);  // Adjust green (less green with more cream)
-  let bgBlue = lerp(227, 115, creaminess / 160);  // Adjust blue (darker as cream increases)
+  let bgRed = lerp(248, 169, creaminess / 160);
+  let bgGreen = lerp(244, 124, creaminess / 160);
+  let bgBlue = lerp(227, 115, creaminess / 160);
   background(bgRed, bgGreen, bgBlue);
 
   noStroke();
   mFFT.analyze();
 
-
-//darkest color = base
+  // Bass (darkest color)
   push();
   fill(54, 34, 20);
   let energyB = mFFT.getEnergy("bass");
-  let diamB = map(energyB, 0, 255, 0, 150);
+  let diamB = map(energyB, 0, 255, 0, 100); // Smaller diameter for bass circles to stop this from inducing seizures lol
 
-  for (let y = 0; y < height + 500; y +=100) {
-    for (let x = 0; x < width + 500; x += 100) ellipse(x, y, diamB);
+  for (let y = 50; y < height + 500; y += 150) {
+    // More spaced out
+    for (let x = 50; x < width + 500; x += 150) {
+      ellipse(x, y, diamB);
+    }
   }
   pop();
 
-
-// mid tone = mid
+  // Mid-tone (mid frequencies)
   push();
   fill((169 + 54) / 2, (124 + 34) / 2, (115 + 20) / 2);
   let energyM = mFFT.getEnergy("mid");
-  let diamM = map(energyM, 0, 255, 0, 150);
+  let diamM = map(energyM, 0, 255, 0, 100); // Smaller diameter for mid-range circles
 
-  for (let y = 0; y < height + 500; y +=100) {
-    for (let x = 0; x < width + 500; x += 100) ellipse(x, y, diamM);
+  for (let y = 50; y < height + 500; y += 150) {
+    for (let x = 50; x < width + 500; x += 150) {
+      ellipse(x, y, diamM);
+    }
   }
   pop();
 
-
-// lightest color = treble
+  // Treble (lightest color)
   push();
   fill(169, 124, 115);
   let energyT = mFFT.getEnergy("treble");
-  let diamT = map(energyT, 0, 255, 0, 150);
+  let diamT = map(energyT, 0, 255, 0, 100); // Smaller diameter for treble circles
 
-  for (let y = 0; y < height+500; y += 100) {
-    for (let x = 0; x < width+ 500; x += 100) ellipse(x, y, diamT);
+  for (let y = 50; y < height + 500; y += 150) {
+    for (let x = 50; x < width + 500; x += 150) {
+      ellipse(x, y, diamT);
+    }
   }
   pop();
 
-
-//STILL NEED TO DO VOLUME PART
+  //STILL NEED TO DO VOLUME PART
   // let vol = mAmplitude.getLevel();
 
   // let diam = map(vol, 0, 1, 0, 1.4 * width);
